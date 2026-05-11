@@ -1,595 +1,85 @@
 @import "tailwindcss";
 
-/* ─── Design Tokens ─────────────────────────────────────── */
-:root {
-  --bg:        #fdf6e3;
-  --primary:   #ffde59;
-  --secondary: #00bf63;
-  --accent:    #ff3131;
-  --purple:    #cb6ce6;
-  --cyan:      #5ce1e6;
-  --text:      #000000;
-  --border:    #000000;
-  --white:     #ffffff;
-  --shadow:    6px 6px 0px 0px #000000;
-  --shadow-sm: 4px 4px 0px 0px #000000;
-  --radius:    16px;
+@theme {
+  --color-primary: #7c3aed;
+  /* Purple Accents */
+  --color-secondary: #fbbf24;
+  /* Yellow Highlights */
+  --color-success: #10b981;
+  /* Green Buttons */
+  --color-danger: #ef4444;
+  --color-border: #000000;
+  --color-card-bg: #ffffff;
+  --color-app-bg: #f8fafc;
 
-  font-family: 'Outfit', system-ui, sans-serif;
-  color: var(--text);
-  background-color: var(--bg);
+  --shadow-premium: 10px 10px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-soft: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+  
+  --font-heading: "Lexend", sans-serif;
+  --font-body: "Inter", sans-serif;
 }
 
-/* ─── Reset ─────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  min-height: 100vh;
-  overflow: hidden;
-  background-color: var(--bg);
-  background-image: radial-gradient(circle at 2px 2px, #00000015 1.5px, transparent 0);
-  background-size: 28px 28px;
-}
-
-#root {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ─── Cartoon Font ───────────────────────────────────────── */
-h1, h2, h3,
-.avatar,
-.live-badge,
-.eyebrow,
-.status-pill,
-.composer button {
-  font-family: 'Bungee', cursive;
-  letter-spacing: 0.5px;
-}
-
-/* ─── Base Elements ──────────────────────────────────────── */
-button, input, textarea {
-  font: inherit;
-  border: 3px solid var(--border);
-  border-radius: var(--radius);
-  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-              box-shadow 0.15s ease;
-}
-
-button {
-  cursor: pointer;
-  background: var(--primary);
-  box-shadow: var(--shadow-sm);
-  padding: 10px 20px;
-  font-weight: 800;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-button:hover:not(:disabled) {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px #000000;
-}
-
-button:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px 0px #000000;
-}
-
-button:disabled {
-  background: #d0d0d0;
-  color: #888;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-  opacity: 0.7;
-}
-
-input {
-  background: var(--white);
-  padding: 12px 16px;
-}
-
-input:focus {
-  outline: none;
-  border-color: var(--secondary);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ─── Shell ──────────────────────────────────────────────── */
-.app-shell {
-  height: 100vh;
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-/* ─── Floating Stickers ───────────────────────────────────── */
-.cartoon-sticker {
-  position: fixed;
-  padding: 8px 18px;
-  border: 4px solid var(--border);
-  font-family: 'Bungee', cursive;
-  font-size: 18px;
-  color: var(--white);
-  z-index: 0;
-  box-shadow: 4px 4px 0px 0px #000000;
-  pointer-events: none;
-  user-select: none;
-}
-
-.sticker-1 {
-  background: var(--accent);
-  top: 30px;
-  left: 30px;
-  transform: rotate(-12deg);
-  animation: floatA 3s ease-in-out infinite;
-}
-
-.sticker-2 {
-  background: #ff00ff;
-  bottom: 50px;
-  right: 30px;
-  transform: rotate(8deg);
-  animation: floatB 4s ease-in-out infinite;
-}
-
-@keyframes floatA {
-  0%, 100% { transform: translateY(0) rotate(-12deg); }
-  50%       { transform: translateY(-10px) rotate(-12deg); }
-}
-
-@keyframes floatB {
-  0%, 100% { transform: translateY(0) rotate(8deg); }
-  50%       { transform: translateY(-14px) rotate(8deg); }
-}
-
-/* ─── Main Card ───────────────────────────────────────────── */
-.deal-chat {
-  position: relative;
-  z-index: 1;
-  width: min(1200px, 100%);
-  height: min(860px, calc(100vh - 48px));
-  display: grid;
-  grid-template-columns: 400px 1fr;
-  background: var(--white);
-  border: 4px solid var(--border);
-  border-radius: 24px;
-  box-shadow: 12px 12px 0px 0px #000000;
-  overflow: hidden;
-}
-
-/* ─── Product Pane ────────────────────────────────────────── */
-.product-pane {
-  background: #ffbd59;
-  padding: 28px;
-  border-right: 4px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.product-image-wrap {
-  position: relative;
-  border: 4px solid var(--border);
-  border-radius: 18px;
-  overflow: hidden;
-  background: white;
-  width: 100%;
-  height: 220px;
-  flex-shrink: 0;
-  box-shadow: var(--shadow-sm);
-}
-
-.product-image {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-.live-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: var(--secondary);
-  color: var(--white);
-  padding: 5px 12px;
-  border: 3px solid var(--border);
-  border-radius: 10px;
-  font-size: 13px;
-  box-shadow: 3px 3px 0px 0px #000000;
-}
-
-.product-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.eyebrow {
-  font-size: 13px;
-  background: var(--accent);
-  color: var(--white);
-  display: inline-block;
-  padding: 3px 10px;
-  border: 2px solid var(--border);
-  border-radius: 6px;
-}
-
-h1 {
-  font-size: 30px;
-  line-height: 1.1;
-}
-
-.product-text {
-  font-size: 15px;
-  line-height: 1.5;
-  font-weight: 500;
-}
-
-.price-strip {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.price-strip div {
-  background: var(--white);
-  border: 3px solid var(--border);
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: var(--shadow-sm);
-}
-
-.price-strip span {
-  display: block;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: #555;
-  margin-bottom: 4px;
-}
-
-.price-strip strong {
-  font-size: 22px;
-  font-weight: 900;
-  font-family: 'Bungee', cursive;
-}
-
-.trust-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: auto;
-}
-
-.trust-list span {
-  background: #00d2ff;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 13px;
-  font-weight: 800;
-  box-shadow: 2px 2px 0px 0px #000000;
-}
-
-/* ─── Chat Pane ───────────────────────────────────────────── */
-.chat-pane {
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  background: var(--white);
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.chat-header {
-  padding: 20px 28px;
-  border-bottom: 4px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  background: var(--purple);
-  flex-shrink: 0;
-}
-
-.chat-header .eyebrow {
-  background: rgba(0,0,0,0.25);
-  border-color: transparent;
-  color: white;
-}
-
-h2 {
-  font-size: 22px;
-  color: var(--white);
-  text-shadow: 2px 2px 0px #000000;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.status-pill {
-  background: var(--secondary);
-  color: var(--white);
-  padding: 7px 14px;
-  border: 3px solid var(--border);
-  border-radius: 10px;
-  font-size: 13px;
-  box-shadow: var(--shadow-sm);
-  flex-shrink: 0;
-  font-family: 'Bungee', cursive;
-}
-
-.reset-btn {
-  background: var(--accent);
-  color: var(--white);
-  padding: 7px 16px;
-  border: 3px solid var(--border);
-  border-radius: 10px;
-  font-size: 13px;
-  font-family: 'Bungee', cursive;
-  box-shadow: var(--shadow-sm);
-  flex-shrink: 0;
-}
-
-.reset-btn:hover:not(:disabled) {
-  background: #cc0000;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px #000000;
-}
-
-/* ─── Messages ────────────────────────────────────────────── */
-.messages {
-  padding: 24px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow-y: auto;
-  min-height: 0;
-  background-image:
-    linear-gradient(#00000006 1px, transparent 1px),
-    linear-gradient(90deg, #00000006 1px, transparent 1px);
-  background-size: 22px 22px;
-}
-
-.messages-end {
-  height: 1px;
-  flex-shrink: 0;
-}
-
-.message-row {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  max-width: 82%;
-}
-
-.message-row.from-user {
-  flex-direction: row-reverse;
-  align-self: flex-end;
-}
-
-.message-row.from-ai {
-  align-self: flex-start;
-}
-
-.avatar {
-  width: 46px;
-  height: 46px;
-  border: 3px solid var(--border);
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-  background: var(--white);
-  box-shadow: 3px 3px 0px 0px #000000;
-  flex-shrink: 0;
-}
-
-.from-user .avatar {
-  background: var(--primary);
-}
-
-.bubble {
-  padding: 14px 18px;
-  border: 3px solid var(--border);
-  border-radius: 18px;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 1.45;
-  position: relative;
-  box-shadow: 4px 4px 0px 0px #000000;
-  word-break: break-word;
-}
-
-.from-ai .bubble {
-  background: var(--white);
-  border-bottom-left-radius: 4px;
-}
-
-.from-user .bubble {
-  background: var(--cyan);
-  border-bottom-right-radius: 4px;
-}
-
-.price-note {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 4px 12px;
-  background: var(--white);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 900;
-  font-family: 'Bungee', cursive;
-}
-
-/* Typing indicator */
-.typing {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  padding: 18px;
-}
-
-.typing span {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  background: #333;
-  border-radius: 50%;
-  animation: typingBounce 0.7s infinite alternate;
-}
-
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typingBounce {
-  0%   { transform: translateY(0); opacity: 0.4; }
-  100% { transform: translateY(-8px); opacity: 1; }
-}
-
-/* ─── Quick Offer Chips ────────────────────────────────────── */
-.offer-chips {
-  padding: 12px 28px 8px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  flex-shrink: 0;
-  border-top: 2px dashed #ccc;
-}
-
-.offer-chips button {
-  white-space: nowrap;
-  background: var(--white);
-  font-size: 13px;
-  padding: 7px 14px;
-  border-radius: 12px;
-}
-
-.offer-chips button:hover {
-  background: var(--accent);
-  color: var(--white);
-}
-
-/* ─── Composer ─────────────────────────────────────────────── */
-.composer {
-  padding: 16px 28px 24px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  border-top: 4px solid var(--border);
-  background: #f7f3e8;
-  flex-shrink: 0;
-}
-
-.composer input {
-  width: 100%;
-  min-width: 0;
-  height: 52px;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 0 16px;
-  border-radius: 14px;
-}
-
-.composer button {
-  height: 52px;
-  padding: 0 28px;
-  font-size: 15px;
-  background: var(--secondary);
-  color: var(--white);
-  border-radius: 14px;
-}
-
-.composer button:hover:not(:disabled) {
-  background: #009e53;
-}
-
-/* ─── Responsive ───────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .app-shell {
-    padding: 0;
-    align-items: stretch;
+@layer base {
+  body {
+    @apply bg-app-bg text-black font-body antialiased overflow-hidden;
   }
 
-  .deal-chat {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
-    width: 100%;
-    height: 100vh;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading font-black;
+  }
+}
+
+@layer components {
+  .btn-premium {
+    @apply relative px-6 py-3 border-4 border-black rounded-2xl font-bold transition-all 
+           shadow-soft hover:-translate-x-1 hover:-translate-y-1 hover:shadow-premium 
+           active:translate-x-0 active:translate-y-0 active:shadow-none;
   }
 
-  .product-pane {
-    border-right: none;
-    border-bottom: 4px solid var(--border);
-    height: auto;
-    max-height: 280px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 16px;
-    gap: 12px;
-    overflow-y: auto;
+  .card-premium {
+    @apply bg-white border-4 border-black rounded-3xl p-6 shadow-premium transition-all
+           hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[14px_14px_0px_0px_rgba(0,0,0,1)];
   }
 
-  .product-image-wrap {
-    width: 180px;
-    height: 140px;
-    flex-shrink: 0;
+  .badge-premium {
+    @apply px-3 py-1 border-2 border-black rounded-full text-[10px] font-black tracking-widest uppercase;
   }
 
-  .product-copy h1 {
-    font-size: 20px;
-  }
-
-  .cartoon-sticker {
+  .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+}
 
-  .chat-header {
-    padding: 16px;
+/* Animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
   }
 
-  .messages {
-    padding: 16px;
-  }
-
-  .offer-chips {
-    padding: 10px 16px 6px;
-  }
-
-  .composer {
-    padding: 12px 16px 20px;
-    grid-template-columns: 1fr auto;
+  to {
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 500px) {
-  .composer {
-    grid-template-columns: 1fr;
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
 
-  .composer button {
-    width: 100%;
+  to {
+    opacity: 1;
   }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }

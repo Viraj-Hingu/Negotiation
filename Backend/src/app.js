@@ -79,7 +79,7 @@ app.get("/health", (req, res) => {
 
 
 // Serve static assets
-app.use(express.static(distPath));
+app.use(express.static(path.join(__dirname, "../public")));
 
 // Serve React app
 app.get("*name", (req, res) => {

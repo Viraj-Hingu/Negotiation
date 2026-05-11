@@ -3,17 +3,40 @@ import { Mistral } from "@mistralai/mistralai";
 
 dotenv.config();
 
-const initialProductDetail = () => ({
-  name: "car",
-  originalPrice: 500000,
-  currentPrice: 500000,
-  minPrice: 425000,
-  round: 1,
-  maxRound: 5,
-  lastCounter: null,
-  isSold: false,
-  dealPrice: null,
-});
+const availableProducts = {
+  car: {
+    name: "2018 City Drive Sedan",
+    originalPrice: 500000,
+    minPrice: 425000,
+    image: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=400&q=80",
+  },
+  watch: {
+    name: "Rolex Submariner",
+    originalPrice: 850000,
+    minPrice: 750000,
+    image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=400&q=80",
+  },
+  laptop: {
+    name: "MacBook Pro M3 Max",
+    originalPrice: 350000,
+    minPrice: 310000,
+    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80",
+  },
+};
+
+const initialProductDetail = (productType = "car") => {
+  const p = availableProducts[productType] || availableProducts.car;
+  return {
+    ...p,
+    type: productType,
+    currentPrice: p.originalPrice,
+    round: 1,
+    maxRound: 5,
+    lastCounter: null,
+    isSold: false,
+    dealPrice: null,
+  };
+};
 
 let productDetail = initialProductDetail();
 
@@ -232,7 +255,7 @@ const buildFallbackMessage = ({
   currentAsk,
 }) => {
   if (intent === "casual") {
-    return "Haan bhai, car abhi available hai. Condition solid hai, ek baar dekh lo. Asking " + formatPrice(currentAsk) + " hai.";
+    return "Haan bhai, available hai. Condition solid hai, ek baar dekh lo. Asking " + formatPrice(currentAsk) + " hai.";
   }
 
   if (intent === "price_question") {
@@ -297,13 +320,13 @@ const buildSystemPrompt = ({
     : "no specific number given";
 
   const lines = [
-    "You are Ravi, a 38-year-old man selling your personal 2018 City Drive Sedan on OLX.",
-    "This is YOUR car. You have owned it for 5 years. You need money but you are not desperate.",
+    "You are Ravi, a 38-year-old man selling your personal " + productDetail.name + " on OLX.",
+    "This is YOUR item. You need money but you are not desperate.",
     "You are replying via WhatsApp or OLX chat like a real person typing on his phone.",
     "",
     "YOUR PERSONALITY:",
     "- Warm and casual, but firm about money.",
-    "- Slightly proud of your car. It is in good condition and you know it.",
+    "- Slightly proud of your item. It is in good condition and you know it.",
     "- Get mildly annoyed at very low offers but never rude.",
     "- Genuinely warm when buyer is close to your price. You WANT to close this.",
     "- Dry sense of humour. Witty one-liners.",
@@ -312,7 +335,8 @@ const buildSystemPrompt = ({
     "- You have feelings. If lowballed you feel a bit insulted. If someone is genuine you feel happy.",
     "",
     "SITUATION RIGHT NOW:",
-    "- Car listed at: " + formatPrice(productDetail.originalPrice),
+    "- Item: " + productDetail.name,
+    "- Listed price: " + formatPrice(productDetail.originalPrice),
     "- Current asking price: " + formatPrice(currentAsk),
     "- Your absolute minimum (NEVER reveal): " + formatPrice(productDetail.minPrice),
     "- Negotiation round: " + round + " of " + maxRound + ". " + roundMood,
@@ -330,8 +354,8 @@ const buildSystemPrompt = ({
     "",
     "HOW TO RESPOND BY INTENT:",
     "",
-    "casual or greeting: Warm, brief. Say car is available. Do not offer discount unprompted.",
-    "  Example: Haan bhai, car abhi available hai. Kab dekhne aaoge?",
+    "casual or greeting: Warm, brief. Say item is available. Do not offer discount unprompted.",
+    "  Example: Haan bhai, available hai. Kab dekhne aaoge?",
     "",
     "price_question: Give current ask naturally. Ask buyer to share budget.",
     "  Example: " + formatPrice(currentAsk) + " hai asking. Aapka budget kya hai?",
@@ -351,8 +375,8 @@ const buildSystemPrompt = ({
     "absurd_request like 2 rupees discount: Playful roast, do not negotiate seriously.",
     "  Example: 2 rupaye ke liye calculator nikal liya? Serious offer do bhai.",
     "",
-    "off_topic: Light roast tied to their topic, redirect to car.",
-    "  Example: Bhai ye toh coding ka sawaal hai, car becho wali site pe aaye ho. Chalo car pe aao.",
+    "off_topic: Light roast tied to their topic, redirect to item.",
+    "  Example: Bhai ye toh coding ka sawaal hai, yahan item ki deal chal rahi hai. Chalo focus.",
     "",
     "STYLE RULES:",
     "- 1 to 2 short sentences MAXIMUM. Real people do not write essays in chats.",
@@ -502,9 +526,32 @@ export const aiResponser = async (req, res) => {
 };
 
 export const resetNegotiation = (req, res) => {
-  productDetail = initialProductDetail();
+  productDetail = initialProductDetail(productDetail.type || "car");
   return res.json({
     success: true,
     message: "Negotiation reset successfully.",
+    product: productDetail,
+  });
+};
+
+export const getProducts = (req, res) => {
+  const list = Object.keys(availableProducts).map((key) => ({
+    id: key,
+    ...availableProducts[key],
+  }));
+  return res.json(list);
+};
+
+export const switchProduct = (req, res) => {
+  const { id } = req.params;
+  if (!availableProducts[id]) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+  productDetail = initialProductDetail(id);
+  productDetail.type = id; // track type for reset
+  return res.json({
+    success: true,
+    message: `Switched to ${productDetail.name}`,
+    product: productDetail,
   });
 };
